@@ -1,0 +1,4 @@
+-- CreateTable
+CREATE TABLE "Docentes" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+);
