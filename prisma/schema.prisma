@@ -14,3 +14,105 @@ model Docentes{
   id Int @id @default(autoincrement())
   
 }
+
+model Docente {
+  id_docente Int    @id @default(autoincrement())
+  nombre     String
+  correo     String @unique
+  contrasena String
+ 
+  clases          Clase[] // relación 1:N con Clase
+  planificacion   Planificacion[]
+  testDocente     TestDocente[]
+  tipoAprendizaje TipoAprendizaje[]
+}
+ 
+model Clase {
+  id_clase    Int     @id @default(autoincrement())
+  nombre      String
+  descripcion String?
+ 
+  alumnos AlumnoClase[]
+ 
+  id_docente Int
+  docente    Docente @relation(fields: [id_docente], references: [id_docente])
+}
+ 
+model Alumno {
+  id_alumno Int    @id @default(autoincrement())
+  nombre    String
+  correo    String @unique
+  edad      Int?
+ 
+  clases          AlumnoClase[]
+  tipoAprendizaje TipoAprendizaje[]
+  respuestas      Calificacion[]
+}
+ 
+model TipoAprendizaje {
+  id_resultado Int      @id @default(autoincrement())
+  mensaje      String?
+  fecha        DateTime
+ 
+  //FK hacia el alumno
+  id_alumno Int
+  alumno    Alumno @relation(fields: [id_alumno], references: [id_alumno])
+ 
+  //FK hacia el Docente
+  id_docente Int
+  docente    Docente @relation(fields: [id_docente], references: [id_docente])
+}
+ 
+model AlumnoClase {
+  id_alumno Int
+  id_clase  Int
+ 
+  alumno Alumno @relation(fields: [id_alumno], references: [id_alumno])
+  clase  Clase  @relation(fields: [id_clase], references: [id_clase])
+ 
+  @@id([id_alumno, id_clase])
+}
+ 
+model Planificacion {
+  id_planificacion Int      @id @default(autoincrement())
+  titulo           String
+  contenido        String?
+  fecha            DateTime
+ 
+  id_docente Int
+  docente    Docente @relation(fields: [id_docente], references: [id_docente])
+ 
+  tests PlanificacionTest[]
+}
+ 
+model TestDocente {
+  id_testdocente Int @id @default(autoincrement())
+ 
+  id_docente Int
+  docente    Docente @relation(fields: [id_docente], references: [id_docente])
+}
+ 
+model PlanificacionTest {
+  id_testplan Int      @id @default(autoincrement())
+  titulo      String
+  descripcion String?
+  fecha       DateTime
+ 
+  //relación con planificacion
+ 
+  id_planificacion Int
+  planificacion    Planificacion  @relation(fields: [id_planificacion], references: [id_planificacion])
+  respuestas       Calificacion[]
+}
+ 
+model Calificacion {
+  id_alumno   Int
+  id_testplan Int
+  nota        Int
+ 
+  alumno Alumno            @relation(fields: [id_alumno], references: [id_alumno])
+  test   PlanificacionTest @relation(fields: [id_testplan], references: [id_testplan])
+ 
+ 
+  @@id([id_alumno, id_testplan])
+}
